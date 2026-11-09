@@ -7,7 +7,7 @@
 
 const char* URL_CLIMA =
   "https://api.open-meteo.com/v1/forecast"
-  "?latitude=LATITUDE&longitude=LONGITUDE"
+  "?latitude=" LATITUDE "&longitude=" LONGITUDE
   "&current=temperature_2m,weather_code"
   "&hourly=precipitation_probability,weather_code"
   "&daily=temperature_2m_max"
