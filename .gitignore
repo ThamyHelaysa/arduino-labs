@@ -1,0 +1,5 @@
+segredos.h
+build/
+.scratch/
+.claude/
+.DS_Store
