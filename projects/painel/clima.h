@@ -10,11 +10,14 @@ const char* URL_CLIMA =
   "?latitude=LATITUDE&longitude=LONGITUDE"
   "&current=temperature_2m,weather_code"
   "&hourly=precipitation_probability,weather_code"
+  "&daily=temperature_2m_max"
   "&timezone=America%2FSao_Paulo"
+  "&past_days=1"
   "&forecast_days=1";
 
-const int LIMITE_CALOR = 36;  // °C: a partir daqui, alerta
+const int LIMITE_CALOR = 36;  // °C de máxima: a partir daqui, Recado de calor
 const int LIMITE_CHUVA = 60;  // %: a partir daqui, "vai chover"
+const int MARGEM_COMPARACAO = 2;  // °C: abaixo disso, "igual a ontem"
 
 // Dados da última busca que deu certo
 bool climaOk     = false;  // já teve alguma busca com sucesso?
@@ -24,6 +27,39 @@ int  chanceChuva = 0;      // maior chance de agora até 23h
 bool vaiChover   = false;
 bool tempestade  = false;
 String dataHoje  = "";     // ex.: 2026-11-07 (vem da resposta do Open-Meteo)
+bool temMaxHoje  = false;  // a API mandou a máxima de hoje?
+bool temMaxOntem = false;  // a API mandou a máxima de ontem?
+int  maxHoje     = 0;
+int  maxOntem    = 0;
+
+bool calorHoje() {
+  return climaOk && temMaxHoje && maxHoje >= LIMITE_CALOR;
+}
+
+// Recado do tempo mais importante, ou nullptr se não houver nenhum
+const char* recadoDoTempo() {
+  if (!climaOk) return nullptr;
+  if (tempestade)  return "TEMPESTADE HOJE. MELHOR NEM SAIR";
+  if (calorHoje()) return "CALOR EXTREMO. BEBE ÁGUA";
+  if (vaiChover)   return "VAI CHOVER. LEVA GUARDA-CHUVA";
+  return nullptr;
+}
+
+bool recadoVermelho() {
+  return climaOk && (tempestade || calorHoje());
+}
+
+bool temComparacao() {
+  return climaOk && temMaxHoje && temMaxOntem;
+}
+
+// Só vale quando temComparacao() for verdadeiro
+const char* vereditoComparacao() {
+  int diferenca = maxHoje - maxOntem;
+  if (diferenca <= -MARGEM_COMPARACAO) return "MAIS FRIO";
+  if (diferenca >= MARGEM_COMPARACAO)  return "MAIS QUENTE";
+  return "IGUAL A ONTEM";
+}
 
 bool conectarWifi() {
   Serial.print("Conectando no Wi-Fi");
@@ -71,6 +107,7 @@ bool buscarClima() {
   }
 
   String agora  = doc["current"]["time"].as<String>();
+  String hoje   = agora.substring(0, 10);
   int horaAgora = agora.substring(11, 13).toInt();
 
   int maiorChance = 0;
@@ -79,11 +116,31 @@ bool buscarClima() {
   JsonArray chances = doc["hourly"]["precipitation_probability"];
   JsonArray codigos = doc["hourly"]["weather_code"];
   for (int i = 0; i < horas.size(); i++) {
-    int hora = String(horas[i].as<const char*>()).substring(11, 13).toInt();
+    String horario = horas[i].as<String>();
+    if (!horario.startsWith(hoje)) continue;   // a resposta também traz ontem
+    int hora = horario.substring(11, 13).toInt();
     if (hora < horaAgora) continue;   // hora que já passou
     int chance = chances[i] | 0;
     if (chance > maiorChance) maiorChance = chance;
     if ((codigos[i] | 0) >= 95) temTempestade = true;
+  }
+
+  // Máximas: ontem é o dia logo antes de hoje na lista
+  bool achouHoje = false, achouOntem = false;
+  float maximaHoje = 0, maximaOntem = 0;
+  JsonArray dias    = doc["daily"]["time"];
+  JsonArray maximas = doc["daily"]["temperature_2m_max"];
+  for (int i = 0; i < dias.size(); i++) {
+    if (dias[i].as<String>() != hoje) continue;
+    if (!maximas[i].isNull()) {
+      achouHoje = true;
+      maximaHoje = maximas[i].as<float>();
+    }
+    if (i > 0 && !maximas[i - 1].isNull()) {
+      achouOntem = true;
+      maximaOntem = maximas[i - 1].as<float>();
+    }
+    break;
   }
 
   // Deu tudo certo: agora sim troca os dados
@@ -93,9 +150,13 @@ bool buscarClima() {
   vaiChover   = maiorChance >= LIMITE_CHUVA;
   tempestade  = temTempestade;
   climaOk     = true;
-  dataHoje    = agora.substring(0, 10);
+  dataHoje    = hoje;
+  temMaxHoje  = achouHoje;
+  temMaxOntem = achouOntem;
+  maxHoje     = (int)round(maximaHoje);
+  maxOntem    = (int)round(maximaOntem);
 
-  Serial.printf("Clima: %d °C, código %d, chuva %d%%, tempestade: %s\n",
-    temperatura, codigoAgora, chanceChuva, tempestade ? "sim" : "não");
+  Serial.printf("Clima: %d °C, código %d, chuva %d%%, tempestade: %s, máx hoje %d, máx ontem %d\n",
+    temperatura, codigoAgora, chanceChuva, tempestade ? "sim" : "não", maxHoje, maxOntem);
   return true;
 }

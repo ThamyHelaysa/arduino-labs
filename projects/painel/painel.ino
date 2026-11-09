@@ -10,6 +10,11 @@ GxEPD2_3C<GxEPD2_290_C90c, GxEPD2_290_C90c::HEIGHT> display(
 );
 U8G2_FOR_ADAFRUIT_GFX u8g2Fonts;
 
+// ===== Fontes =====
+const uint8_t* const FONTE_GRANDE = u8g2_font_VCR_OSD_tf;
+const uint8_t* const FONTE_BANNER = u8g2_font_Pixellari_tf;
+const uint8_t* const FONTE_TEXTO  = u8g2_font_nokiafc22_tf;
+
 // ===== Ícones =====
 const uint16_t ICONE_NUVEM = 64;
 const uint16_t ICONE_CHUVA = 67;
@@ -49,7 +54,8 @@ void conferirViradaDoDia() {
 }
 
 // ===== Funções de texto =====
-int escreverQuebrando(const char* texto, int x, int y, int largura, int alturaLinha) {
+// Com desenhar = false, só calcula onde o texto terminaria
+int escreverQuebrando(const char* texto, int x, int y, int largura, int alturaLinha, bool desenhar) {
   String t = String(texto) + " ";
   String linha = "";
   String palavra = "";
@@ -58,8 +64,10 @@ int escreverQuebrando(const char* texto, int x, int y, int largura, int alturaLi
     if (c == ' ') {
       String teste = linha.length() ? linha + " " + palavra : palavra;
       if (u8g2Fonts.getUTF8Width(teste.c_str()) > largura && linha.length()) {
-        u8g2Fonts.setCursor(x, y);
-        u8g2Fonts.print(linha);
+        if (desenhar) {
+          u8g2Fonts.setCursor(x, y);
+          u8g2Fonts.print(linha);
+        }
         y += alturaLinha;
         linha = palavra;
       } else {
@@ -71,8 +79,10 @@ int escreverQuebrando(const char* texto, int x, int y, int largura, int alturaLi
     }
   }
   if (linha.length()) {
-    u8g2Fonts.setCursor(x, y);
-    u8g2Fonts.print(linha);
+    if (desenhar) {
+      u8g2Fonts.setCursor(x, y);
+      u8g2Fonts.print(linha);
+    }
     y += alturaLinha;
   }
   return y;
@@ -84,55 +94,74 @@ void escreverDireita(String texto, int xDireita, int y) {
   u8g2Fonts.print(texto);
 }
 
+// ===== Banner =====
+const int ALTURA_BANNER       = 40;
+const int ALTURA_LINHA_BANNER = 18;
+const int ASCENDENTE_BANNER   = 11;
+
+// Desenha o Banner com o texto centralizado na altura e devolve quantas linhas usou
+int desenharBanner(const char* texto, uint16_t fundo) {
+  display.fillRect(0, 0, 296, ALTURA_BANNER, fundo);
+  u8g2Fonts.setFont(FONTE_BANNER);
+  u8g2Fonts.setForegroundColor(GxEPD_WHITE);
+  u8g2Fonts.setBackgroundColor(fundo);
+
+  int linhas = escreverQuebrando(texto, 6, 0, 284, ALTURA_LINHA_BANNER, false) / ALTURA_LINHA_BANNER;
+  int alturaTexto = ASCENDENTE_BANNER + (linhas - 1) * ALTURA_LINHA_BANNER;
+  int y = (ALTURA_BANNER - alturaTexto) / 2 + ASCENDENTE_BANNER;
+  escreverQuebrando(texto, 6, y, 284, ALTURA_LINHA_BANNER, true);
+
+  u8g2Fonts.setBackgroundColor(GxEPD_WHITE);
+  u8g2Fonts.setForegroundColor(GxEPD_BLACK);
+  return linhas;
+}
+
 // ===== Tela principal =====
 void desenharTelaPrincipal() {
-  bool calor  = climaOk && temperatura >= LIMITE_CALOR;
-  bool alerta = calor || (climaOk && tempestade);
-  bool fraseLonga = false;
+  const char* recado = recadoDoTempo();
+  const char* textoBanner = recado ? recado : FRASES[fraseAtual];
+  uint16_t fundoBanner = recadoVermelho() ? GxEPD_RED : GxEPD_BLACK;
+  int linhasBanner = 0;
 
   display.setFullWindow();
   display.firstPage();
   do {
     display.fillScreen(GxEPD_WHITE);
 
-    // --- Frase do dia ---
-    u8g2Fonts.setFont(u8g2_font_lubBI14_tf);
-    u8g2Fonts.setForegroundColor(GxEPD_BLACK);
-    int yFim = escreverQuebrando(FRASES[fraseAtual], 8, 22, 280, 20);
-    fraseLonga = (yFim > 62);  // passou de 2 linhas
+    linhasBanner = desenharBanner(textoBanner, fundoBanner);
 
-    display.drawLine(8, 68, 288, 68, GxEPD_BLACK);
+    // --- Caixa do tempo ---
+    display.drawRect(2, 44, 218, 82, GxEPD_BLACK);
 
-    // --- Ícone do tempo agora ---
-    if (climaOk) {
-      u8g2Fonts.setFont(u8g2_font_open_iconic_weather_4x_t);
-      u8g2Fonts.setForegroundColor(GxEPD_BLACK);
-      u8g2Fonts.drawGlyph(8, 118, iconeDoTempo(codigoAgora));
-    }
-
-    // --- Temperatura ---
-    u8g2Fonts.setFont(u8g2_font_lubR24_tf);
-    u8g2Fonts.setForegroundColor(calor ? GxEPD_RED : GxEPD_BLACK);
-    u8g2Fonts.setCursor(52, 112);
+    u8g2Fonts.setFont(FONTE_GRANDE);
+    u8g2Fonts.setCursor(10, 68);
     u8g2Fonts.print(climaOk ? String(temperatura) + "°C" : String("--°C"));
 
-    // --- Chuva ---
-    u8g2Fonts.setFont(u8g2_font_profont15_tf);
-    u8g2Fonts.setForegroundColor(GxEPD_BLACK);
-    String linhaChuva = climaOk
-      ? String("Chuva hoje: ") + (vaiChover ? "sim " : "não ") + chanceChuva + "%"
-      : String("Sem dados do tempo");
-    escreverDireita(linhaChuva, 288, 92);
+    if (temComparacao()) {
+      u8g2Fonts.setFont(FONTE_BANNER);
+      escreverDireita(vereditoComparacao(), 214, 68);
+    }
 
-    // --- Alerta ---
-    if (alerta) {
-      u8g2Fonts.setForegroundColor(GxEPD_RED);
-      escreverDireita(tempestade ? "Tempestade!" : "Calor extremo!", 288, 116);
+    u8g2Fonts.setFont(FONTE_TEXTO);
+    if (!climaOk) {
+      u8g2Fonts.setCursor(10, 92);
+      u8g2Fonts.print("Sem dados do tempo");
+    } else {
+      if (temComparacao()) {
+        u8g2Fonts.setCursor(10, 92);
+        u8g2Fonts.print(String("Máx ") + maxHoje + " hoje | " + maxOntem + " ontem");
+      }
+      u8g2Fonts.setCursor(10, 114);
+      u8g2Fonts.print(String("Chuva hoje ") + chanceChuva + "%");
+
+      // --- Ícone do tempo agora ---
+      u8g2Fonts.setFont(u8g2_font_open_iconic_weather_8x_t);
+      u8g2Fonts.drawGlyph(226, 117, iconeDoTempo(codigoAgora));
     }
   } while (display.nextPage());
 
-  if (fraseLonga) {
-    Serial.println("AVISO: essa frase passou de 2 linhas. Considere encurtar.");
+  if (linhasBanner > 2) {
+    Serial.println("AVISO: esse texto passou de 2 linhas no Banner. Considere encurtar.");
   }
 }
 
@@ -149,7 +178,7 @@ void desenharCheatSheet(int indice) {
 
     // Barra do título: fundo preto, letra branca
     display.fillRect(0, 0, 296, 18, GxEPD_BLACK);
-    u8g2Fonts.setFont(u8g2_font_profont15_tf);
+    u8g2Fonts.setFont(FONTE_TEXTO);
     u8g2Fonts.setForegroundColor(GxEPD_WHITE);
     u8g2Fonts.setFontMode(1);
     u8g2Fonts.setBackgroundColor(GxEPD_BLACK);  // fundo das letras = preto, igual à barra
@@ -181,13 +210,15 @@ unsigned long ultimaBusca   = 0;
 unsigned long ultimoSucesso = 0;
 String telaAtual = "";
 
-// Tudo o que aparece na tela, numa linha só (agora com a frase)
+// Tudo o que aparece na tela, numa linha só
 String resumoDaTela() {
   if (telaAberta > 0) return String("cheat|") + telaAberta;
-  String r = String(fraseAtual) + "|";
+  const char* recado = recadoDoTempo();
+  String r = (recado ? String(recado) : String(fraseAtual)) + "|";
   if (!climaOk) return r + "sem dados";
-  return r + String(temperatura) + "|" + String(iconeDoTempo(codigoAgora)) + "|" +
-         String(chanceChuva) + "|" + (vaiChover ? "S" : "N") + (tempestade ? "T" : "-");
+  r += String(temperatura) + "|" + String(iconeDoTempo(codigoAgora)) + "|" + String(chanceChuva) + "|";
+  if (temComparacao()) r += String(maxHoje) + "/" + String(maxOntem);
+  return r;
 }
 
 void atualizarClima() {
@@ -235,12 +266,14 @@ void loop() {
     Serial.printf("Aperto curto: tela %d\n", telaAberta);
     redesenharSeMudou();
   } else if (aperto == 2) {
-    if (telaAberta == 0) {
+    if (telaAberta != 0) {
+      Serial.println("Aperto longo ignorado: só funciona na tela principal.");
+    } else if (recadoDoTempo() != nullptr) {
+      Serial.println("Aperto longo ignorado: Recado do tempo no Banner.");
+    } else {
       Serial.println("Aperto longo: frase nova.");
       sortearFrase();
       redesenharSeMudou();
-    } else {
-      Serial.println("Aperto longo ignorado: só funciona na tela principal.");
     }
   }
 
