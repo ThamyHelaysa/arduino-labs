@@ -1,8 +1,8 @@
 // cheatsheets.h: título + até 7 comandos por tela.
 // Cada comando cabe com até ~40 caracteres.
 struct CheatSheet {
-  const char* titulo;
-  const char* linhas[7];
+  const char* title;
+  const char* lines[7];
 };
 
 const CheatSheet CHEATSHEETS[] = {
@@ -24,4 +24,4 @@ const CheatSheet CHEATSHEETS[] = {
     "docker compose down",
   }},
 };
-const int TOTAL_CHEATSHEETS = sizeof(CHEATSHEETS) / sizeof(CHEATSHEETS[0]);
+const int CHEATSHEET_COUNT = sizeof(CHEATSHEETS) / sizeof(CHEATSHEETS[0]);
