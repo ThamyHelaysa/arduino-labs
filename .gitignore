@@ -3,3 +3,6 @@ build/
 .scratch/
 .claude/
 .DS_Store
+__pycache__/
+tools/fonts/.build/
+preview.png

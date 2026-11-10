@@ -10,6 +10,12 @@ Projetos e experimentos com Arduino e ESP32.
 | --- | --- |
 | [painel](projects/painel) | Painel de mesa com tela e-ink: tempo, frase do dia e cheat sheets. |
 
+## Ferramentas
+
+| Ferramenta | Descrição |
+| --- | --- |
+| [fonts](tools/fonts) | Testa em PNG se um texto cabe na tela e converte fontes para U8g2. |
+
 ## Como compilar
 
 Cada projeto fixa placa e bibliotecas em `sketch.yaml`. Com o [Arduino CLI](https://arduino.github.io/arduino-cli/) instalado:
