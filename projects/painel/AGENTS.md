@@ -8,6 +8,10 @@ Write everything in English, even where existing files use Portuguese:
 
 The Portuguese triage labels below are the one exception.
 
+## Commit authorship
+
+Credit only human authors in commits. Omit any `Co-Authored-By` trailer naming Claude or another LLM.
+
 ## Agent skills
 
 ### Issue tracker
