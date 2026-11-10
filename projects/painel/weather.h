@@ -1,9 +1,9 @@
-// clima.h: busca o tempo da cidade configurada no Open-Meteo
+// weather.h: busca o tempo da cidade configurada no Open-Meteo
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
-#include "segredos.h"
+#include "secrets.h"
 
 const char* URL_CLIMA =
   "https://api.open-meteo.com/v1/forecast"

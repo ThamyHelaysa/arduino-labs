@@ -23,8 +23,8 @@ O botão liga o GPIO 32 ao GND.
 
 ## Instalação
 
-1. Copie `segredos.exemplo.h` para `segredos.h`.
-2. Preencha Wi-Fi, latitude e longitude. O fuso horário fica em `clima.h`.
+1. Copie `secrets.example.h` para `secrets.h`.
+2. Preencha Wi-Fi, latitude e longitude. O fuso horário fica em `weather.h`.
 3. Grave na placa, trocando a porta:
 
 ```sh
@@ -36,4 +36,4 @@ arduino-cli compile --profile esp32 --upload -p /dev/cu.usbserial-XXXX
 - Aperto curto: alterna entre a tela principal e as cheat sheets.
 - Aperto longo (3 s) na tela principal: sorteia outra frase, se não houver recado do tempo.
 
-Frases ficam em `frases.h` e comandos em `cheatsheets.h`.
+Frases ficam em `quotes.h` e comandos em `cheatsheets.h`.
