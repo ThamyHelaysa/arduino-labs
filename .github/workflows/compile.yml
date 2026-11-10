@@ -19,6 +19,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: arduino/setup-arduino-cli@v2
       - name: Use example secrets
-        run: cp projects/${{ matrix.project }}/segredos.exemplo.h projects/${{ matrix.project }}/segredos.h
+        run: cp projects/${{ matrix.project }}/secrets.example.h projects/${{ matrix.project }}/secrets.h
       - name: Compile
         run: arduino-cli compile --profile esp32 projects/${{ matrix.project }}

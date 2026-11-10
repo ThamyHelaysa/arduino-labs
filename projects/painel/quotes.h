@@ -1,4 +1,4 @@
-// frases.h: uma frase por linha, entre aspas, com vírgula no fim.
+// quotes.h: uma frase por linha, entre aspas, com vírgula no fim.
 // Até ~60 caracteres cabe nas 2 linhas do Banner. Mais que isso invade a Caixa do tempo.
 const char* FRASES[] = {
   "Feito é melhor que perfeito. Um passo de cada vez.",

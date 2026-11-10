@@ -22,7 +22,7 @@ Cada projeto fixa placa e bibliotecas em `sketch.yaml`. Com o [Arduino CLI](http
 
 ```sh
 cd projects/painel
-cp segredos.exemplo.h segredos.h   # preencha com os seus dados
+cp secrets.example.h secrets.h   # preencha com os seus dados
 arduino-cli compile --profile esp32
 ```
 

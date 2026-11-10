@@ -1,4 +1,4 @@
-// botao.h: botão no G32 (o outro lado no GND)
+// button.h: botão no G32 (o outro lado no GND)
 const int PINO_BOTAO = 32;
 const unsigned long TEMPO_LONGO = 3000;  // 3 s
 const unsigned long DEBOUNCE    = 50;

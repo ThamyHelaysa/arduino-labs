@@ -1,3 +1,17 @@
+## Language
+
+Write everything in English, even where existing files use Portuguese:
+
+- Code: identifiers, comments, file names.
+- Docs: README, glossary, ADRs, issues and specs.
+- Version control: commit messages, branch names, PR titles and descriptions.
+
+The Portuguese triage labels below are the one exception.
+
+## Commit authorship
+
+Credit only human authors in commits. Omit any `Co-Authored-By` trailer naming Claude or another LLM.
+
 ## Agent skills
 
 ### Issue tracker

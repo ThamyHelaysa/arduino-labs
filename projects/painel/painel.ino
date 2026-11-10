@@ -1,8 +1,8 @@
 #include <GxEPD2_3C.h>
 #include <U8g2_for_Adafruit_GFX.h>
-#include "clima.h"
-#include "frases.h"
-#include "botao.h"
+#include "weather.h"
+#include "quotes.h"
+#include "button.h"
 #include "cheatsheets.h"
 
 GxEPD2_3C<GxEPD2_290_C90c, GxEPD2_290_C90c::HEIGHT> display(
