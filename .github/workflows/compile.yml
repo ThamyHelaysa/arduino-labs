@@ -16,7 +16,7 @@ jobs:
       matrix:
         project: [painel]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: arduino/setup-arduino-cli@v2
       - name: Use example secrets
         run: cp projects/${{ matrix.project }}/secrets.example.h projects/${{ matrix.project }}/secrets.h
