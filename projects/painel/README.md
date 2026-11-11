@@ -47,7 +47,7 @@ With the pack in `~/Downloads/piixl-Char_1-bit`, run this from `projects/painel`
 ```sh
 PACK=~/Downloads/piixl-Char_1-bit/16x16px
 mkdir -p assets/cat
-for pose in cloud:624 heat:583 no_data:586 rain:592 storm:590 sun:582; do
+for pose in cloud:614 heat:583 no_data:586 rain:592 storm:590 sun:582; do
   cp "$PACK/char_ ${pose#*:}.png" "assets/cat/${pose%%:*}.png"
 done
 python3 ../../tools/bitmaps/convert.py assets/cat/*.png --name cat --scale 4 --output cat.h
