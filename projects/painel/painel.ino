@@ -97,7 +97,7 @@ void writeRightAligned(String text, int rightX, int y) {
 }
 
 // ===== Banner =====
-const int BANNER_HEIGHT      = 40;
+const int BANNER_HEIGHT      = 46;
 const int BANNER_LINE_HEIGHT = 18;
 const int BANNER_ASCENT      = 14;
 
@@ -108,10 +108,12 @@ int drawBanner(const char* text, uint16_t background) {
   u8g2Fonts.setForegroundColor(GxEPD_WHITE);
   u8g2Fonts.setBackgroundColor(background);
 
-  int lines = writeWrapped(text, 6, 0, 284, BANNER_LINE_HEIGHT, false) / BANNER_LINE_HEIGHT;
+  String upper = text;
+  upper.toUpperCase();  // ASCII only: accented letters keep their case
+  int lines = writeWrapped(upper.c_str(), 6, 0, 284, BANNER_LINE_HEIGHT, false) / BANNER_LINE_HEIGHT;
   int textHeight = BANNER_ASCENT + (lines - 1) * BANNER_LINE_HEIGHT;
   int y = (BANNER_HEIGHT - textHeight) / 2 + BANNER_ASCENT;
-  writeWrapped(text, 6, y, 284, BANNER_LINE_HEIGHT, true);
+  writeWrapped(upper.c_str(), 6, y, 284, BANNER_LINE_HEIGHT, true);
 
   u8g2Fonts.setBackgroundColor(GxEPD_WHITE);
   u8g2Fonts.setForegroundColor(GxEPD_BLACK);
@@ -137,24 +139,24 @@ void drawMainScreen() {
     bannerLines = drawBanner(bannerText, bannerBackground);
 
     // --- Weather box ---
-    display.drawRect(2, 44, 218, 82, GxEPD_BLACK);
+    display.drawRect(2, 50, 218, 76, GxEPD_BLACK);
 
     u8g2Fonts.setFont(FONT_LARGE);
-    u8g2Fonts.setCursor(10, 68);
+    u8g2Fonts.setCursor(10, 74);
     u8g2Fonts.print(weatherOk ? String(temperature) + "°C" : String("--°C"));
 
     if (hasComparison()) {
       u8g2Fonts.setFont(FONT_BANNER);
-      writeRightAligned(comparisonVerdict(), 214, 68);
+      writeRightAligned(comparisonVerdict(), 214, 74);
     }
 
     u8g2Fonts.setFont(FONT_TEXT);
     if (!weatherOk) {
-      u8g2Fonts.setCursor(10, 92);
+      u8g2Fonts.setCursor(10, 94);
       u8g2Fonts.print("No weather data");
     } else {
       if (hasComparison()) {
-        u8g2Fonts.setCursor(10, 92);
+        u8g2Fonts.setCursor(10, 94);
         u8g2Fonts.print("Today " + signedDegrees(maxToday) + " : Yest. " + signedDegrees(maxYesterday));
       }
       u8g2Fonts.setCursor(10, 114);
@@ -162,7 +164,7 @@ void drawMainScreen() {
 
       // --- Current weather icon ---
       u8g2Fonts.setFont(u8g2_font_open_iconic_weather_8x_t);
-      u8g2Fonts.drawGlyph(226, 117, weatherIcon(currentCode));
+      u8g2Fonts.drawGlyph(226, 120, weatherIcon(currentCode));
     }
   } while (display.nextPage());
 
