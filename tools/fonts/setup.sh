@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compila o bdfconv do U8g2 em tools/fonts/.build, numa versão fixa.
+# Builds U8g2's bdfconv into tools/fonts/.build, at a pinned version.
 set -eu
 
 VERSION=2.37.1
@@ -12,7 +12,7 @@ rm -rf "$SOURCE"
 git clone --quiet --depth 1 --branch "$VERSION" --filter=blob:none --sparse \
   https://github.com/olikraus/u8g2.git "$SOURCE"
 git -C "$SOURCE" sparse-checkout set tools/font/bdfconv
-# O Makefile usa -O4, que o Clang recusa
+# The Makefile uses -O4, which Clang rejects
 make -C "$SOURCE/tools/font/bdfconv" CFLAGS=-O2 >/dev/null
 cp "$SOURCE/tools/font/bdfconv/bdfconv" "$BUILD/bdfconv"
-echo "bdfconv pronto em $BUILD/bdfconv"
+echo "bdfconv ready at $BUILD/bdfconv"
