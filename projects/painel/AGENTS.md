@@ -1,13 +1,3 @@
-## Language
-
-Write everything in English, even where existing files use Portuguese:
-
-- Code: identifiers, comments, file names.
-- Docs: README, glossary, ADRs, issues and specs.
-- Version control: commit messages, branch names, PR titles and descriptions.
-
-The Portuguese triage labels below are the one exception.
-
 ## Agent skills
 
 ### Issue tracker
