@@ -1,16 +1,16 @@
 # Painel
 
-Painel de mesa com tela e-ink de 2.9" que mostra o tempo, uma frase do dia e cheat sheets de comandos. Os dados do tempo vêm do [Open-Meteo](https://open-meteo.com/), sem chave de API.
+Desk panel with a 2.9" e-ink display that shows the weather, a quote of the day and command cheat sheets. Weather data comes from [Open-Meteo](https://open-meteo.com/), with no API key.
 
-## Peças
+## Parts
 
 - ESP32
-- Tela e-ink 2.9" de 3 cores, 296x128 (driver `GxEPD2_290_C90c`)
-- Um botão
+- 2.9" 3-color e-ink display, 296x128 (`GxEPD2_290_C90c` driver)
+- One button
 
-## Ligações
+## Wiring
 
-| Tela | GPIO |
+| Display | GPIO |
 | --- | --- |
 | CS | 5 |
 | DC | 22 |
@@ -19,21 +19,21 @@ Painel de mesa com tela e-ink de 2.9" que mostra o tempo, uma frase do dia e che
 | SCK | 18 |
 | SDI/MOSI | 23 |
 
-O botão liga o GPIO 32 ao GND.
+The button connects GPIO 32 to GND.
 
-## Instalação
+## Setup
 
-1. Copie `secrets.example.h` para `secrets.h`.
-2. Preencha Wi-Fi, latitude e longitude. O fuso horário fica em `weather.h`.
-3. Grave na placa, trocando a porta:
+1. Copy `secrets.example.h` to `secrets.h`.
+2. Fill in Wi-Fi, latitude and longitude. The timezone lives in `weather.h`.
+3. Flash the board, replacing the port:
 
 ```sh
 arduino-cli compile --profile esp32 --upload -p /dev/cu.usbserial-XXXX
 ```
 
-## Uso
+## Usage
 
-- Aperto curto: alterna entre a tela principal e as cheat sheets.
-- Aperto longo (3 s) na tela principal: sorteia outra frase, se não houver recado do tempo.
+- Short press: cycles between the main screen and the cheat sheets.
+- Long press (3 s) on the main screen: picks another quote, unless a weather notice is showing.
 
-Frases ficam em `quotes.h` e comandos em `cheatsheets.h`.
+Quotes live in `quotes.h` and commands in `cheatsheets.h`.

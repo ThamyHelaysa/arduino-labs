@@ -1,33 +1,33 @@
 # Painel
 
-Painel de mesa com tela e-ink que mostra o tempo da cidade configurada, uma frase e consultas rápidas de comandos.
+Desk panel with an e-ink display that shows the configured city's weather, a quote and quick command references.
 
 ## Language
 
-**Tela principal**:
-A página de abertura do Painel, com o Banner e os dados do tempo.
+**Main screen**:
+The Painel's opening page, with the Banner and the weather data.
 _Avoid_: Home, dashboard
 
 **Cheat sheet**:
-Uma página com um título e uma lista curta de comandos para consulta.
-_Avoid_: Cola, página de comandos
+A page with a title and a short list of commands for quick reference.
+_Avoid_: Crib sheet, command page
 
 **Banner**:
-A faixa invertida no topo da Tela principal, que mostra o Recado do tempo ou a Frase do dia.
-_Avoid_: Header, alerta
+The inverted strip at the top of the Main screen that shows the Weather notice or the Quote of the day.
+_Avoid_: Header, alert
 
-**Recado do tempo**:
-A mensagem curta sobre a condição mais importante do tempo, entre tempestade, calor e chuva, nessa ordem. Aparece um por vez e tem prioridade sobre a Frase do dia no Banner.
-_Avoid_: Alerta, aviso
+**Weather notice**:
+The short message about the most important weather condition, among storm, heat and rain, in that order. Only one shows at a time, and it takes priority over the Quote of the day in the Banner.
+_Avoid_: Alert, warning
 
-**Caixa do tempo**:
-O bloco com borda na Tela principal que reúne a temperatura atual, a Comparação com ontem e a chance de chuva.
-_Avoid_: Card, quadro
+**Weather box**:
+The bordered block on the Main screen that groups the current temperature, the Yesterday comparison and the chance of rain.
+_Avoid_: Card, frame
 
-**Comparação com ontem**:
-O veredito que diz se hoje está mais frio, mais quente ou igual a ontem, com base na temperatura máxima de cada dia.
-_Avoid_: Variação, diferença
+**Yesterday comparison**:
+The verdict that says whether today is colder, warmer or like yesterday, based on each day's high.
+_Avoid_: Variation, difference
 
-**Frase do dia**:
-A frase curta sorteada de uma lista fixa, mostrada no Banner quando não há Recado do tempo.
-_Avoid_: Citação, mensagem
+**Quote of the day**:
+The short quote picked from a fixed list, shown in the Banner when there is no Weather notice.
+_Avoid_: Saying, message
