@@ -37,3 +37,18 @@ arduino-cli compile --profile esp32 --upload -p /dev/cu.usbserial-XXXX
 - Long press (3 s) on the main screen: picks another quote, unless a weather notice is showing.
 
 Quotes live in `quotes.h` and commands in `cheatsheets.h`.
+
+## Cat
+
+The Cat's art comes from the [1-bit characters pack by piiixl](https://piiixl.itch.io/1-bit-characters). The license does not allow redistribution, so the art and the generated `cat.h` stay out of the repo (see `.gitignore`). Without `cat.h`, the sketch builds with the placeholder Poses in `cat.example.h`.
+
+With the pack in `~/Downloads/piixl-Char_1-bit`, run this from `projects/painel` to copy the six sprites and generate `cat.h`:
+
+```sh
+PACK=~/Downloads/piixl-Char_1-bit/16x16px
+mkdir -p assets/cat
+for pose in cloud:624 heat:583 no_data:586 rain:592 storm:590 sun:582; do
+  cp "$PACK/char_ ${pose#*:}.png" "assets/cat/${pose%%:*}.png"
+done
+python3 ../../tools/bitmaps/convert.py assets/cat/*.png --name cat --scale 4 --output cat.h
+```
