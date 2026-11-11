@@ -2,30 +2,30 @@
 
 [![Compile](https://github.com/ThamyHelaysa/arduino-labs/actions/workflows/compile.yml/badge.svg)](https://github.com/ThamyHelaysa/arduino-labs/actions/workflows/compile.yml)
 
-Projetos e experimentos com Arduino e ESP32.
+Arduino and ESP32 projects and experiments.
 
-## Projetos
+## Projects
 
-| Projeto | Descrição |
+| Project | Description |
 | --- | --- |
-| [painel](projects/painel) | Painel de mesa com tela e-ink: tempo, frase do dia e cheat sheets. |
+| [painel](projects/painel) | Desk panel with an e-ink display: weather, quote of the day and cheat sheets. |
 
-## Ferramentas
+## Tools
 
-| Ferramenta | Descrição |
+| Tool | Description |
 | --- | --- |
-| [fonts](tools/fonts) | Testa em PNG se um texto cabe na tela e converte fontes para U8g2. |
+| [fonts](tools/fonts) | Checks in a PNG whether text fits the display and converts fonts to U8g2. |
 
-## Como compilar
+## Building
 
-Cada projeto fixa placa e bibliotecas em `sketch.yaml`. Com o [Arduino CLI](https://arduino.github.io/arduino-cli/) instalado:
+Each project pins its board and libraries in `sketch.yaml`. With the [Arduino CLI](https://arduino.github.io/arduino-cli/) installed:
 
 ```sh
 cd projects/painel
-cp secrets.example.h secrets.h   # preencha com os seus dados
+cp secrets.example.h secrets.h   # fill in your own values
 arduino-cli compile --profile esp32
 ```
 
-## Licença
+## License
 
-Código sob [MIT](LICENSE). Fontes de terceiros mantêm a licença própria.
+Code under [MIT](LICENSE). Third-party fonts keep their own license.

@@ -1,38 +1,38 @@
-# Ferramentas de fonte
+# Font tools
 
-Testam e convertem fontes U8g2 sem precisar gravar a placa. Precisam só de Python 3.
+Test and convert U8g2 fonts without flashing the board. They only need Python 3.
 
 ## preview
 
-Gera um PNG do tamanho da tela e informa se o texto cabe. Termina com erro se faltar glifo ou espaço.
+Renders a display-sized PNG and reports whether the text fits. Exits with an error when a glyph or space is missing.
 
 ```sh
-python3 tools/fonts/preview.py "VAI CHOVER. LEVA GUARDA-CHUVA" \
+python3 tools/fonts/preview.py "RAIN AHEAD. TAKE AN UMBRELLA" \
   --font Pixellari_tf --invert --center --max-lines 2 --size 296x40
 ```
 
-Para ver as fontes instaladas:
+To see the installed fonts:
 
 ```sh
 python3 tools/fonts/preview.py --list pixel
 ```
 
-Por padrão, as fontes vêm de `~/Documents/Arduino/libraries/U8g2_for_Adafruit_GFX/src/u8g2_fonts.c`. Use `--library` para outro caminho. A largura é a soma dos avanços dos glifos, então pode diferir em 1 px da medida na placa. Só são lidos glifos de código até 255.
+By default, fonts come from `~/Documents/Arduino/libraries/U8g2_for_Adafruit_GFX/src/u8g2_fonts.c`. Use `--library` for another path. Width is the sum of glyph advances, so it may differ by 1 px from the board. Only glyphs with codes up to 255 are read.
 
 ## convert
 
-Transforma TTF, OTF ou BDF em um `.h` para o sketch. Na primeira vez, compile o `bdfconv`:
+Turns a TTF, OTF or BDF into a `.h` for the sketch. The first time, build `bdfconv`:
 
 ```sh
 tools/fonts/setup.sh
-brew install otf2bdf   # só para TTF e OTF
+brew install otf2bdf   # only for TTF and OTF
 ```
 
 ```sh
-python3 tools/fonts/convert.py VT323-Regular.ttf --name fonte_banner --size 16
-python3 tools/fonts/preview.py "Teste de acentuação" --font-file fonte_banner.h
+python3 tools/fonts/convert.py VT323-Regular.ttf --name banner_font --size 16
+python3 tools/fonts/preview.py "Accent test: ação, café" --font-file banner_font.h
 ```
 
-Em fonte pixel, `--size` precisa ser o tamanho nativo da fonte ou um múltiplo dele, senão as letras deformam.
+For pixel fonts, `--size` must be the font's native size or a multiple of it, or the letters get distorted.
 
-Antes de publicar um `.h` gerado, confira a licença da fonte e guarde o arquivo de licença junto dele.
+Before publishing a generated `.h`, check the font's license and keep the license file next to it.
