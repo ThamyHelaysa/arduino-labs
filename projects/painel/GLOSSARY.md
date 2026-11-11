@@ -31,3 +31,11 @@ _Avoid_: Variation, difference
 **Quote of the day**:
 The short quote picked from a fixed list, shown in the Banner when there is no Weather notice.
 _Avoid_: Saying, message
+
+**Cat**:
+The cat mascot on the right of the Main screen, where the weather icon used to be. It shows one Pose at a time.
+_Avoid_: Icon, sprite, pet
+
+**Pose**:
+The Cat's drawing for the current weather: no data, storm, heat, rain, cloud or sun, in that order of priority. The storm and heat Poses use red, like their Weather notices.
+_Avoid_: Frame, state, expression

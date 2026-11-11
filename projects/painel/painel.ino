@@ -4,6 +4,13 @@
 #include "quotes.h"
 #include "button.h"
 #include "cheatsheets.h"
+// The Cat art is licensed and cannot be redistributed, so cat.h is gitignored.
+// Without it, the build falls back to the placeholder Poses in cat.example.h.
+#if __has_include("cat.h")
+#include "cat.h"
+#else
+#include "cat.example.h"
+#endif
 #include "assets/fonts/IBM_BIOS/ibm_bios_font.h"
 #include "assets/fonts/IBM_BIOS/ibm_bios_2y.h"
 
@@ -17,15 +24,29 @@ const uint8_t* const FONT_LARGE  = u8g2_font_VCR_OSD_tf;
 const uint8_t* const FONT_BANNER = ibm_bios_2y;
 const uint8_t* const FONT_TEXT   = ibm_bios_font;
 
-// ===== Icons =====
-const uint16_t ICON_CLOUD = 64;
-const uint16_t ICON_RAIN  = 67;
-const uint16_t ICON_SUN   = 69;
+// ===== Cat =====
+struct Pose { const char* name; const uint8_t* black; const uint8_t* red; };
+const Pose POSE_SUN     = {"sun", cat_sun_black, cat_sun_red};
+const Pose POSE_CLOUD   = {"cloud", cat_cloud_black, cat_cloud_red};
+const Pose POSE_RAIN    = {"rain", cat_rain_black, cat_rain_red};
+const Pose POSE_STORM   = {"storm", cat_storm_black, cat_storm_red};
+const Pose POSE_HEAT    = {"heat", cat_heat_black, cat_heat_red};
+const Pose POSE_NO_DATA = {"no_data", cat_no_data_black, cat_no_data_red};
 
-uint16_t weatherIcon(int code) {
-  if (code >= 51) return ICON_RAIN;
-  if (code >= 2)  return ICON_CLOUD;
-  return ICON_SUN;
+// Same priority as weatherNotice(), then the current weather
+const Pose& currentPose() {
+  if (!weatherOk)                         return POSE_NO_DATA;
+  if (storm)                              return POSE_STORM;
+  if (isHotToday())                       return POSE_HEAT;
+  if (rainExpected || currentCode >= 51)  return POSE_RAIN;
+  if (currentCode >= 2)                   return POSE_CLOUD;
+  return POSE_SUN;
+}
+
+void drawCat(int x, int y) {
+  const Pose& pose = currentPose();
+  display.drawBitmap(x, y, pose.black, CAT_WIDTH, CAT_HEIGHT, GxEPD_BLACK);
+  display.drawBitmap(x, y, pose.red, CAT_WIDTH, CAT_HEIGHT, GxEPD_RED);
 }
 
 // ===== Quote of the day =====
@@ -161,11 +182,9 @@ void drawMainScreen() {
       }
       u8g2Fonts.setCursor(10, 114);
       u8g2Fonts.print(String("Rain today ") + rainChance + "%");
-
-      // --- Current weather icon ---
-      u8g2Fonts.setFont(u8g2_font_open_iconic_weather_8x_t);
-      u8g2Fonts.drawGlyph(226, 120, weatherIcon(currentCode));
     }
+
+    drawCat(226, 56);
   } while (display.nextPage());
 
   if (bannerLines > 2) {
@@ -224,7 +243,7 @@ String screenSummary() {
   const char* notice = weatherNotice();
   String r = (notice ? String(notice) : String(currentQuote)) + "|";
   if (!weatherOk) return r + "no data";
-  r += String(temperature) + "|" + String(weatherIcon(currentCode)) + "|" + String(rainChance) + "|";
+  r += String(temperature) + "|" + currentPose().name + "|" + String(rainChance) + "|";
   if (hasComparison()) r += String(maxToday) + "/" + String(maxYesterday);
   return r;
 }
