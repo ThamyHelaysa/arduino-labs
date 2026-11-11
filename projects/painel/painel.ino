@@ -5,6 +5,7 @@
 #include "button.h"
 #include "cheatsheets.h"
 #include "assets/fonts/IBM_BIOS/ibm_bios_font.h"
+#include "assets/fonts/IBM_BIOS/ibm_bios_2y.h"
 
 GxEPD2_3C<GxEPD2_290_C90c, GxEPD2_290_C90c::HEIGHT> display(
   GxEPD2_290_C90c(5, 22, 21, 4)
@@ -13,7 +14,7 @@ U8G2_FOR_ADAFRUIT_GFX u8g2Fonts;
 
 // ===== Fonts =====
 const uint8_t* const FONT_LARGE  = u8g2_font_VCR_OSD_tf;
-const uint8_t* const FONT_BANNER = u8g2_font_Pixellari_tf;
+const uint8_t* const FONT_BANNER = ibm_bios_2y;
 const uint8_t* const FONT_TEXT   = ibm_bios_font;
 
 // ===== Icons =====
@@ -98,7 +99,7 @@ void writeRightAligned(String text, int rightX, int y) {
 // ===== Banner =====
 const int BANNER_HEIGHT      = 40;
 const int BANNER_LINE_HEIGHT = 18;
-const int BANNER_ASCENT      = 11;
+const int BANNER_ASCENT      = 14;
 
 // Draws the Banner with the text vertically centered and returns how many lines it used
 int drawBanner(const char* text, uint16_t background) {
@@ -115,6 +116,10 @@ int drawBanner(const char* text, uint16_t background) {
   u8g2Fonts.setBackgroundColor(GxEPD_WHITE);
   u8g2Fonts.setForegroundColor(GxEPD_BLACK);
   return lines;
+}
+
+String signedDegrees(int value) {
+  return (value > 0 ? "+" : "") + String(value) + "°C";
 }
 
 // ===== Main screen =====
@@ -150,7 +155,7 @@ void drawMainScreen() {
     } else {
       if (hasComparison()) {
         u8g2Fonts.setCursor(10, 92);
-        u8g2Fonts.print(String("High ") + maxToday + " today | " + maxYesterday + " yesterday");
+        u8g2Fonts.print("Today " + signedDegrees(maxToday) + " : Yest. " + signedDegrees(maxYesterday));
       }
       u8g2Fonts.setCursor(10, 114);
       u8g2Fonts.print(String("Rain today ") + rainChance + "%");
