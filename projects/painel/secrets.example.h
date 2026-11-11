@@ -1,8 +1,8 @@
-// Copie este arquivo para secrets.h e preencha com os seus dados.
-// secrets.h fica fora do git. Nunca publique esse arquivo.
-#define WIFI_SSID  "nome-da-rede"
-#define WIFI_PASSWORD "senha-da-rede"
+// Copy this file to secrets.h and fill in your own values.
+// secrets.h stays out of git. Never publish it.
+#define WIFI_SSID     "network-name"
+#define WIFI_PASSWORD "network-password"
 
-// Coordenadas da sua cidade, com duas casas decimais
+// Your city's coordinates, with two decimal places
 #define LATITUDE  "0.00"
 #define LONGITUDE "0.00"

@@ -1,5 +1,5 @@
-// cheatsheets.h: título + até 7 comandos por tela.
-// Cada comando cabe com até ~40 caracteres.
+// cheatsheets.h: a title plus up to 7 commands per screen.
+// Each command fits in about 40 characters.
 struct CheatSheet {
   const char* title;
   const char* lines[7];
@@ -11,15 +11,15 @@ const CheatSheet CHEATSHEETS[] = {
     "aws configure list",
     "aws sso login",
     "aws s3 ls",
-    "aws s3 cp ARQ s3://BUCKET/",
-    "aws logs tail GRUPO --follow",
+    "aws s3 cp FILE s3://BUCKET/",
+    "aws logs tail GROUP --follow",
   }},
   { "Docker", {
     "docker ps -a",
-    "docker start NOME",
-    "docker stop NOME",
-    "docker logs -f NOME",
-    "docker exec -it NOME sh",
+    "docker start NAME",
+    "docker stop NAME",
+    "docker logs -f NAME",
+    "docker exec -it NAME sh",
     "docker compose up -d",
     "docker compose down",
   }},
