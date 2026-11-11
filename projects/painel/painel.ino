@@ -4,6 +4,7 @@
 #include "quotes.h"
 #include "button.h"
 #include "cheatsheets.h"
+#include "assets/fonts/IBM_BIOS/ibm_bios_font.h"
 
 GxEPD2_3C<GxEPD2_290_C90c, GxEPD2_290_C90c::HEIGHT> display(
   GxEPD2_290_C90c(5, 22, 21, 4)
@@ -13,7 +14,7 @@ U8G2_FOR_ADAFRUIT_GFX u8g2Fonts;
 // ===== Fonts =====
 const uint8_t* const FONT_LARGE  = u8g2_font_VCR_OSD_tf;
 const uint8_t* const FONT_BANNER = u8g2_font_Pixellari_tf;
-const uint8_t* const FONT_TEXT   = u8g2_font_nokiafc22_tf;
+const uint8_t* const FONT_TEXT   = ibm_bios_font;
 
 // ===== Icons =====
 const uint16_t ICON_CLOUD = 64;
