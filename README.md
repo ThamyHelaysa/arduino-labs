@@ -2,7 +2,7 @@
 
 [![Compile](https://github.com/ThamyHelaysa/arduino-labs/actions/workflows/compile.yml/badge.svg)](https://github.com/ThamyHelaysa/arduino-labs/actions/workflows/compile.yml)
 
-This is where I learn microcontrollers by building things I want on my desk. Each project is a self-contained Arduino sketch for the ESP32, and the tools are small scripts I wrote along the way to avoid flashing the board just to see if something fits on a screen.
+This is where I learn microcontrollers by building things I want on my desk, because why not. Each project is a self-contained Arduino sketch for the ESP32, and the tools are just small scripts I wrote along the way to avoid flashing the board just to see if something fits or looks good on a screen.
 
 ## Projects
 
@@ -10,17 +10,20 @@ This is where I learn microcontrollers by building things I want on my desk. Eac
 | --- | --- |
 | [painel](projects/painel) | Desk panel with an e-ink display: weather, quote of the day and cheat sheets. |
 
-![the painel v1 with no soldering or case resting on my desk](projects/painel/docs/images/hero.jpeg)
+<p align="center">
+  <img src="projects/painel/docs/images/hero.jpeg" alt="The painel v1 with no soldering or case resting on my desk"><br>
+  <em>The painel v1 with no soldering or case resting on my desk</em>
+</p>
 
 ## Tools
 
-Both tools came out of the painel, and both need only Python 3. Each folder has a README with every option.
+Both tools came out when building the painel, and both need only Python 3. Each folder has a README with every option.
 
 ### [fonts](tools/fonts)
 
-I wrote this one when the fonts that ship with U8g2 stopped being enough and I wanted a different one on the panel. It has two scripts:
+I wrote this one when the fonts that ship with [U8g2](https://github.com/olikraus/u8g2) stopped being enough and I wanted a different one on the panel. It has two scripts:
 
-- `convert.py` turns a TTF, OTF or BDF font into a `.h` file the sketch can include. The painel's IBM BIOS fonts were made this way.
+- `convert.py` turns a TTF, OTF or BDF font into a `.h` file the sketch can include. The painel's [IBM BIOS](https://int10h.org/oldschool-pc-fonts/fontlist/?1#ibm-bios) fonts were made this way.
 - `preview.py` draws a text in a given font to a PNG the size of the display and reports whether it fits. On a screen that takes about 15 seconds to refresh, this is much faster than flashing the board to find out a quote is one word too long.
 
 ```sh

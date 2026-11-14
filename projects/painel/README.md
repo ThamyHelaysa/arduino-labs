@@ -1,10 +1,13 @@
 # Painel
 
-![the painel v1 with no soldering or case resting on my desk](./docs/images/hero.jpeg)
+<p align="center">
+  <img src="docs/images/hero.jpeg" alt="The painel v1 with no soldering or case resting on my desk"><br>
+  <em>The painel v1 with no soldering or case resting on my desk</em>
+</p>
 
-Painel is a small desk panel built around an ESP32 and a 2.9" e-ink display. It sits next to my keyboard, plugged into USB, and tells me three things: what the weather is doing today, a short quote to start the day, and the commands I keep having to look up.
+Painel is a small desk panel built around an ESP32 and a 2.9" e-ink display. It sits next to my keyboard, plugged into USB, and shows: what the weather is doing today, a short quote to start the day, and the commands I keep having to look up.
 
-There was no problem to solve here. I had a 3-color display that could not be used for a clock, because it has no partial refresh and every update makes the whole screen flash for about 15 seconds. A panel that changes only a few times a day turned that limit into a non-issue, and gave me an excuse to learn buttons, Wi-Fi and HTTP on a microcontroller.
+There was no problem to solve here, just my curiosity driven by consumerism (I bought the e-ink before deciding what to do with it e.e). I got a 3-color display that could not be used for a clock, because it has no partial refresh and every update makes the whole screen flash for about 15 seconds (black, red and white e-ink cant have partial update, learned the hard way T.T). A panel that changes only a few times a day turned that limit into a non-issue, and gave me an excuse to learn buttons, Wi-Fi and HTTP on a microcontroller.
 
 Weather data comes from [Open-Meteo](https://open-meteo.com/), with no API key.
 
@@ -14,17 +17,23 @@ Weather data comes from [Open-Meteo](https://open-meteo.com/), with no API key.
 
 The Main screen has three parts:
 
-- **Banner.** The inverted strip at the top. Most of the time it holds the Quote of the day. When the weather needs attention, a Weather notice takes its place: storm, heat or rain, in that order of priority. Storm and heat turn the Banner red, the only time red is used for text.
+- **Banner.** The inverted strip at the top. Most of the time it holds *The Quote* of the day. When the weather needs attention, a Weather notice takes its place: storm, heat or rain, in that order of priority. Storm and heat turn the Banner red, the only time red is used for text.
 - **Weather box.** The current temperature, a verdict on whether today is colder, warmer or like yesterday, both days' highs, and the highest chance of rain from now until the end of the day.
 - **Cat.** A pixel-art cat that changes Pose with the weather: sun, cloud, rain, heat, storm, or a confused one when there is no data.
 
-![the painels main screen](./docs/images/main-screen.jpeg)
+<p align="center">
+  <img src="docs/images/main-screen.jpeg" alt="The painel's main screen"><br>
+  <em>The painel's main screen</em>
+</p>
 
 ### Cheat sheets
 
 Each Cheat sheet is one page with a title bar and up to seven commands. The ones in the repo are examples for AWS and Docker; the idea is to fill them with whatever I catch myself searching for.
 
-![the painel cheat sheet page one](./docs/images/cheat-sheet.jpeg)
+<p align="center">
+  <img src="docs/images/cheat-sheet.jpeg" alt="The painel cheat sheet page one"><br>
+  <em>The painel cheat sheet page one</em>
+</p>
 
 ## How it behaves
 
@@ -54,7 +63,10 @@ The thresholds live at the top of `weather.h`:
 
 ## Wiring
 
-![the painel wiring on the ESP and protoboard + button](./docs/images/wiring.jpeg)
+<p align="center">
+  <img src="docs/images/wiring.jpeg" alt="The painel wiring on the ESP and protoboard + button"><br>
+  <em>The painel wiring on the ESP and protoboard + button</em>
+</p>
 
 | Display | ESP32 |
 | --- | --- |
@@ -69,7 +81,7 @@ The thresholds live at the top of `weather.h`:
 
 The button connects GPIO 32 to GND, using the pin's internal pull-up. GPIO 34 and 35 would not work here, since they are input-only and have no internal pull-up.
 
-Unplug the USB cable before connecting or moving any wire.
+**Always unplug the USB cable before connecting or moving any wire!**
 
 ## Setup
 
@@ -80,6 +92,8 @@ Unplug the USB cable before connecting or moving any wire.
 ```sh
 arduino-cli compile --profile esp32 --upload -p /dev/cu.usbserial-XXXX
 ```
+
+You can also download the [Arduino IDE](https://www.arduino.cc/en/software/), install it, and do the manual process (maybe I will make a blog post about it).
 
 The board and library versions are pinned in `sketch.yaml`, so the build needs nothing else installed by hand.
 
