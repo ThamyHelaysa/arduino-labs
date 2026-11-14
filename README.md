@@ -10,7 +10,7 @@ This is where I learn microcontrollers by building things I want on my desk. Eac
 | --- | --- |
 | [painel](projects/painel) | Desk panel with an e-ink display: weather, quote of the day and cheat sheets. |
 
-![the painel v1 with no soldering or case resting on my desk](./docs/images/hero.jpeg)
+![the painel v1 with no soldering or case resting on my desk](projects/painel/docs/images/hero.jpeg)
 
 ## Tools
 

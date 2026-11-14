@@ -54,7 +54,7 @@ The thresholds live at the top of `weather.h`:
 
 ## Wiring
 
-![the painel wiring on the ESP and protoboard + button](./docs/images/hero.jpeg)
+![the painel wiring on the ESP and protoboard + button](./docs/images/wiring.jpeg)
 
 | Display | ESP32 |
 | --- | --- |
