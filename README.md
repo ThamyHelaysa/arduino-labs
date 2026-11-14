@@ -14,10 +14,30 @@ This is where I learn microcontrollers by building things I want on my desk. Eac
 
 ## Tools
 
-| Tool | Description |
-| --- | --- |
-| [fonts](tools/fonts) | Checks in a PNG whether text fits the display and converts fonts to U8g2. |
-| [bitmaps](tools/bitmaps) | Turns PNGs into Adafruit GFX bitmaps for 3-color e-ink. |
+Both tools came out of the painel, and both need only Python 3. Each folder has a README with every option.
+
+### [fonts](tools/fonts)
+
+I wrote this one when the fonts that ship with U8g2 stopped being enough and I wanted a different one on the panel. It has two scripts:
+
+- `convert.py` turns a TTF, OTF or BDF font into a `.h` file the sketch can include. The painel's IBM BIOS fonts were made this way.
+- `preview.py` draws a text in a given font to a PNG the size of the display and reports whether it fits. On a screen that takes about 15 seconds to refresh, this is much faster than flashing the board to find out a quote is one word too long.
+
+```sh
+python3 tools/fonts/convert.py VT323-Regular.ttf --name banner_font --size 16
+python3 tools/fonts/preview.py "RAIN AHEAD. TAKE AN UMBRELLA" \
+  --font-file banner_font.h --invert --center --max-lines 2 --size 296x40
+```
+
+### [bitmaps](tools/bitmaps)
+
+This one converts PNGs into a `.h` file with bitmaps the display library can draw. I needed it for the weather icon on the panel's Main screen, which later became the Cat.
+
+Each PNG becomes two arrays, one per ink: pure red pixels go to the red layer, dark pixels to the black layer, and everything else stays white. The sketch draws one array on top of the other.
+
+```sh
+python3 tools/bitmaps/convert.py art/*.png --name cat --scale 4 --output cat.h
+```
 
 ## Building
 
