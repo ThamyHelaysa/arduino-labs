@@ -1,6 +1,6 @@
 # Painel
 
-<!-- photo: docs/images/hero.jpg (the panel on the desk, Main screen showing) -->
+![the painel v1 with no soldering or case resting on my desk](./docs/images/hero.jpeg)
 
 Painel is a small desk panel built around an ESP32 and a 2.9" e-ink display. It sits next to my keyboard, plugged into USB, and tells me three things: what the weather is doing today, a short quote to start the day, and the commands I keep having to look up.
 
@@ -18,13 +18,13 @@ The Main screen has three parts:
 - **Weather box.** The current temperature, a verdict on whether today is colder, warmer or like yesterday, both days' highs, and the highest chance of rain from now until the end of the day.
 - **Cat.** A pixel-art cat that changes Pose with the weather: sun, cloud, rain, heat, storm, or a confused one when there is no data.
 
-<!-- photo: docs/images/main-screen.jpg (close-up of the Main screen with a Weather notice) -->
+![the painels main screen](./docs/images/main-screen.jpeg)
 
 ### Cheat sheets
 
 Each Cheat sheet is one page with a title bar and up to seven commands. The ones in the repo are examples for AWS and Docker; the idea is to fill them with whatever I catch myself searching for.
 
-<!-- photo: docs/images/cheat-sheet.jpg (a Cheat sheet page) -->
+![the painel cheat sheet page one](./docs/images/cheat-sheet.jpeg)
 
 ## How it behaves
 
@@ -54,7 +54,7 @@ The thresholds live at the top of `weather.h`:
 
 ## Wiring
 
-<!-- photo: docs/images/wiring.jpg (the breadboard with the display and the button wired) -->
+![the painel wiring on the ESP and protoboard + button](./docs/images/hero.jpeg)
 
 | Display | ESP32 |
 | --- | --- |
