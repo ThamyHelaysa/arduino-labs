@@ -1,42 +1,110 @@
 # Painel
 
-Desk panel with a 2.9" e-ink display that shows the weather, a quote of the day and command cheat sheets. Weather data comes from [Open-Meteo](https://open-meteo.com/), with no API key.
+<p align="center">
+  <img src="docs/images/hero.jpeg" alt="The painel v1 with no soldering or case resting on my desk"><br>
+  <em>The painel v1 with no soldering or case resting on my desk</em>
+</p>
+
+Painel is a small desk panel built around an ESP32 and a 2.9" e-ink display. It sits next to my keyboard, plugged into USB, and shows: what the weather is doing today, a short quote to start the day, and the commands I keep having to look up.
+
+There was no problem to solve here, just my curiosity driven by consumerism (I bought the e-ink before deciding what to do with it e.e). I got a 3-color display that could not be used for a clock, because it has no partial refresh and every update makes the whole screen flash for about 15 seconds (black, red and white e-ink cant have partial update, learned the hard way T.T). A panel that changes only a few times a day turned that limit into a non-issue, and gave me an excuse to learn buttons, Wi-Fi and HTTP on a microcontroller.
+
+Weather data comes from [Open-Meteo](https://open-meteo.com/), with no API key.
+
+## What it shows
+
+### Main screen
+
+The Main screen has three parts:
+
+- **Banner.** The inverted strip at the top. Most of the time it holds *The Quote* of the day. When the weather needs attention, a Weather notice takes its place: storm, heat or rain, in that order of priority. Storm and heat turn the Banner red, the only time red is used for text.
+- **Weather box.** The current temperature, a verdict on whether today is colder, warmer or like yesterday, both days' highs, and the highest chance of rain from now until the end of the day.
+- **Cat.** A pixel-art cat that changes Pose with the weather: sun, cloud, rain, heat, storm, or a confused one when there is no data.
+
+<p align="center">
+  <img src="docs/images/main-screen.jpeg" alt="The painel's main screen"><br>
+  <em>The painel's main screen</em>
+</p>
+
+### Cheat sheets
+
+Each Cheat sheet is one page with a title bar and up to seven commands. The ones in the repo are examples for AWS and Docker; the idea is to fill them with whatever I catch myself searching for.
+
+<p align="center">
+  <img src="docs/images/cheat-sheet.jpeg" alt="The painel cheat sheet page one"><br>
+  <em>The painel cheat sheet page one</em>
+</p>
+
+## How it behaves
+
+The rules below are the ones that took the most thought, and they all follow from the slow, flashing refresh.
+
+- **The screen only redraws when something visible changed.** Weather is fetched every 30 minutes, but if the temperature, the rain chance, the Pose and the Banner are all the same, the screen stays still.
+- **Wi-Fi is on only during a fetch.** It connects, downloads the forecast and turns off again.
+- **A failed fetch keeps the last data.** After 2 hours without a successful fetch, the panel stops pretending and shows `--°C` and "No weather data".
+- **The quote changes once a day.** The panel has no clock, so it watches the date that comes back from Open-Meteo: the first successful fetch after midnight picks a new quote. A reboot picks a new one too.
+- **Cheat sheets hide the weather, not stop it.** While a Cheat sheet is open, the weather keeps updating in the background without redrawing, and shows up when you return to the Main screen.
+
+The thresholds live at the top of `weather.h`:
+
+| Rule | Value |
+| --- | --- |
+| Rain notice | 60% chance or more in any remaining hour of the day |
+| Heat notice | today's high at 36 °C or more |
+| Storm notice | a thunderstorm weather code in any remaining hour of the day |
+| "Like yesterday" | highs less than 2 °C apart |
 
 ## Parts
 
-- ESP32
-- 2.9" 3-color e-ink display, 296x128 (`GxEPD2_290_C90c` driver)
-- One button
+- ESP32 dev board
+- 2.9" 3-color e-ink display (black, white and red), 296x128, `GxEPD2_290_C90c` driver
+- One push button
+- Breadboard and jumper wires
 
 ## Wiring
 
-| Display | GPIO |
-| --- | --- |
-| CS | 5 |
-| DC | 22 |
-| RST | 21 |
-| BUSY | 4 |
-| SCK | 18 |
-| SDI/MOSI | 23 |
+<p align="center">
+  <img src="docs/images/wiring.jpeg" alt="The painel wiring on the ESP and protoboard + button"><br>
+  <em>The painel wiring on the ESP and protoboard + button</em>
+</p>
 
-The button connects GPIO 32 to GND.
+| Display | ESP32 |
+| --- | --- |
+| VCC | 3V3 |
+| GND | GND |
+| SDA/DIN (MOSI) | GPIO 23 |
+| SCL/CLK (SCK) | GPIO 18 |
+| CS | GPIO 5 |
+| D/C | GPIO 22 |
+| RES/RST | GPIO 21 |
+| BUSY | GPIO 4 |
+
+The button connects GPIO 32 to GND, using the pin's internal pull-up. GPIO 34 and 35 would not work here, since they are input-only and have no internal pull-up.
+
+**Always unplug the USB cable before connecting or moving any wire!**
 
 ## Setup
 
 1. Copy `secrets.example.h` to `secrets.h`.
-2. Fill in Wi-Fi, latitude and longitude. The timezone lives in `weather.h`.
+2. Fill in your Wi-Fi name and password, and your latitude and longitude. The timezone is set in the URL at the top of `weather.h`.
 3. Flash the board, replacing the port:
 
 ```sh
 arduino-cli compile --profile esp32 --upload -p /dev/cu.usbserial-XXXX
 ```
 
+You can also download the [Arduino IDE](https://www.arduino.cc/en/software/), install it, and do the manual process (maybe I will make a blog post about it).
+
+The board and library versions are pinned in `sketch.yaml`, so the build needs nothing else installed by hand.
+
 ## Usage
 
-- Short press: cycles between the main screen and the cheat sheets.
-- Long press (3 s) on the main screen: picks another quote, unless a weather notice is showing.
+- **Short press:** goes to the next screen, from the Main screen through each Cheat sheet and back.
+- **Long press (3 s) on the Main screen:** picks another quote. It is ignored while a Weather notice is in the Banner.
 
-Quotes live in `quotes.h` and commands in `cheatsheets.h`.
+The button is not read while the screen is redrawing, so wait for the flashing to stop before pressing again.
+
+Quotes live in `quotes.h` and commands in `cheatsheets.h`. About 60 characters fit in the Banner; [`tools/fonts`](../../tools/fonts) can check a text against the display size without flashing the board.
 
 ## Cat
 
@@ -52,3 +120,16 @@ for pose in cloud:614 heat:583 no_data:586 rain:592 storm:590 sun:582; do
 done
 python3 ../../tools/bitmaps/convert.py assets/cat/*.png --name cat --scale 4 --output cat.h
 ```
+
+## How it got here
+
+The panel grew one small step at a time, each one tested in its own sketch before joining the main one:
+
+1. The display wired up and showing a hello world.
+2. The button, telling a short press from a long one.
+3. A font with accented characters.
+4. The Main screen layout with fake data, then with the real forecast.
+5. The Quote of the day and the Cheat sheets. This was the first version: a quote, a weather icon, the temperature and a line about rain.
+6. A second look, inspired by a 1-bit panel I saw: inverted blocks, a pixel font, Weather notices with some personality, the comparison with yesterday, and the Cat in place of the weather icon.
+
+The words in capitals (Banner, Weather notice, Pose and so on) are defined in the [glossary](GLOSSARY.md), and the decisions worth remembering are in [`docs/adr`](docs/adr).
